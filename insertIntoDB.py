@@ -31,6 +31,8 @@ cursor = conn.cursor()
 
 # Function to create tables and insert data
 def create_tables_and_insert_data():
+    stockTableQuery = f"CREATE TABLE IF NOT EXISTS \"STOCKS\" (STOCK_SYMBOL varchar(10) NOT NULL , STOCK_GICS_SECTOR varchar(255) NOT NULL ,PRIMARY KEY(STOCK_SYMBOL));"
+    cursor.execute(stockTableQuery)
     for filename in os.listdir(folder_path):
         if filename.endswith('.csv'):
             table_name = os.path.splitext(filename)[0]  # Extract table name from file name (without extension)
@@ -42,8 +44,7 @@ def create_tables_and_insert_data():
             # print(df['GICS Sector'].iloc[0])
             
             # Create table with the same structure as DataFrame
-            stockTableQuery = f"CREATE TABLE IF NOT EXISTS \"STOCKS\" (STOCK_SYMBOL varchar(10) NOT NULL , STOCK_GICS_SECTOR varchar(255) NOT NULL ,PRIMARY KEY(STOCK_SYMBOL));"
-            cursor.execute(stockTableQuery)
+
             insertIntoStocksQuery = f"INSERT INTO \"STOCKS\" VALUES ('{table_name}', '{df['GICS Sector'].iloc[0]}') ON CONFLICT DO NOTHING;"
             cursor.execute(insertIntoStocksQuery)
             create_table_query = f"CREATE TABLE IF NOT EXISTS \"{table_name}\" (DATA_ID SERIAL PRIMARY KEY, TRADE_DATE DATE,OPEN_PRICE float(20), CLOSING_PRICE float(20), DAY_HIGH float(20), DAY_LOW float(20), ADJ_CLOSE_PRICE float(20), VOLUME_TRADED int );"
@@ -64,6 +65,7 @@ def create_tables_and_insert_data():
                 table_columns = [column_mapping[column] for column in column_mapping.keys()]    
                 insert_query = f"INSERT INTO \"{table_name}\" ({', '.join(table_columns)}) VALUES ({', '.join(['%s'] * len(mapped_values))}) ON CONFLICT DO NOTHING;"
                 cursor.execute(insert_query, mapped_values)
+            print(f'Inserted all rows from {table_name}')
 
     
     # Commit changes and close connection
