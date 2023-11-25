@@ -11,6 +11,7 @@ def download_sp500_data(startYear, endYear, folder_path):
     sp500_df = table[0]
     tickers = sp500_df['Symbol'].tolist()
     tickerCategory = sp500_df.set_index('Symbol')['GICS Sector'].to_dict()
+    # TODO need to add the company name too. fetch it using this and then get the name from a diff table acc to symbol
 
     # Creating the folder if it doesn't exist
     if not os.path.exists(folder_path):
