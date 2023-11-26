@@ -19,9 +19,8 @@ class invokeService:
             return None
         else:
             yieldPercent = pastYield.calculateYield(jsonData[0], jsonData[-1]) 
-            print(f"{yieldPercent}%")
-            return jsonData
-        # return yieldPercent
+            # print(f"{yieldPercent}%")
+            return yieldPercent
         
     def displayingData(self, stockSymbol, startDate, endDate):
         dataDisplay = displayData(self.jParser, self.pgAPI)
@@ -33,23 +32,20 @@ class invokeService:
             return jsonData
         
             
-    def rankingBySector(self, sectorName, startDate, endDate):
+    def rankingBySector(self, ticker, sectorName, startDate, endDate):
         rankSector = rankingBySector(self.jParser, self.pgAPI)
         companiesDataTuple = rankSector.getSectors(sectorName)
         companiesDataJson = rankSector.processCompaniesData(companiesDataTuple)
         if len(companiesDataJson)==0:
             return None
         else:
-            # print(companiesDataTuple)
-            # print(companiesDataJson)
-
-            companiesData = rankSector.getIndividualCompanyData(companiesDataJson, startDate, endDate)
-            # print(companiesData)
-        
-    
-    def fundFinder(self, jParser, pgAPI):
-        pass
-        
+            companiesDataDict = rankSector.getIndividualCompanyData(companiesDataJson, startDate, endDate)
+            inputtedTickerIndex = list(companiesDataDict).index(ticker)
+            firstFiveDictItems = list(companiesDataDict.items())[:5]
+            print(inputtedTickerIndex)
+            print(f'\n\n{firstFiveDictItems}')
+            return (inputtedTickerIndex, firstFiveDictItems)
+                    
 
 
 if __name__ == "__main__":
@@ -58,9 +54,9 @@ if __name__ == "__main__":
     service = invokeService(jParser, pgAPI)
 
     #add a way to invoke services depending on user choice
-    # invokeService.pastYields(service, 'AAPL', '2015-01-01', '2015-12-25') #take these as inputs
-    # invokeService.displayingData(service, 'AAPL', '2015-01-01', '2015-12-25') #take these as inputs
-    invokeService.rankingBySector(service, 'Information Technology', '2015-01-01', '2015-12-25') #take these as inputs
+    # result = invokeService.pastYields(service, 'AAPL', '2015-01-01', '2015-12-25') #take these as inputs
+    # result = invokeService.displayingData(service, 'AAPL', '2015-01-01', '2015-12-25') #take these as inputs
+    tickerLocation, top5 = invokeService.rankingBySector(service, 'AAPL', 'Information Technology', '2015-01-01', '2015-12-25') #take these as inputs
 
     
     

@@ -29,30 +29,20 @@ class rankingBySector:
         # Fetch data from PostgreSQL
         individualDataDict = {}
         for row in companiesJsonData:
-            # processedData = []
             stockSymbol = row['Stock Symbol']
             stockName = row['Stock Name']
             individualCompanyData = f"Select trade_date, closing_price from \"{row['Stock Symbol']}\" where trade_date >=\'{startDate}\' and trade_date <=\'{endDate}\';"
             postgresData = self.postgres_api.fetchDataFromDatabase(individualCompanyData)
-            # print(postgresData)
             if len(postgresData)!=0:
                 firstDataRow = postgresData[0]
                 lastDataRow = postgresData[-1]
                 performance = ((lastDataRow[1]-firstDataRow[1])/firstDataRow[1])*100
                 individualDataDict[stockSymbol] = (stockName, performance)
             
-            # for row in postgresData:
-            #     jsonRow = {'Trade Date': row[0].isoformat(), 'Closing Price': row[1]}
-            #     processedData.append(jsonRow)
             
             #sorting the dictionary 
-            individualDataDictSorted = dict(sorted(individualDataDict.items(), key=lambda item: item[1]))
-            
-            # json_data = self.json_parser.parse(json.dumps(processedData))
-            # individualDataDict[stockName] = json_data
-        
-        print(individualDataDict)
-        print(f'\n\n{individualDataDictSorted}')
+            individualDataDictSorted = dict(sorted(individualDataDict.items(), key=lambda item: item[1][1], reverse = True))
+                    
         return individualDataDictSorted
      
     
