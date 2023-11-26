@@ -42,8 +42,8 @@ class invokeService:
             companiesDataDict = rankSector.getIndividualCompanyData(companiesDataJson, startDate, endDate)
             inputtedTickerIndex = list(companiesDataDict).index(ticker)
             firstFiveDictItems = list(companiesDataDict.items())[:5]
-            print(inputtedTickerIndex)
-            print(f'\n\n{firstFiveDictItems}')
+            # print(inputtedTickerIndex)
+            # print(f'\n{firstFiveDictItems}')
             return (inputtedTickerIndex, firstFiveDictItems)
                     
 
@@ -54,8 +54,8 @@ if __name__ == "__main__":
     service = invokeService(jParser, pgAPI)
 
     #add a way to invoke services depending on user choice
-    # result = invokeService.pastYields(service, 'AAPL', '2015-01-01', '2015-12-25') #take these as inputs
-    # result = invokeService.displayingData(service, 'AAPL', '2015-01-01', '2015-12-25') #take these as inputs
+    yieldResult = invokeService.pastYields(service, 'AAPL', '2015-01-01', '2015-12-25') #take these as inputs
+    displayDataresult = invokeService.displayingData(service, 'AAPL', '2015-01-01', '2015-12-25') #take these as inputs
     tickerLocation, top5 = invokeService.rankingBySector(service, 'AAPL', 'Information Technology', '2015-01-01', '2015-12-25') #take these as inputs
 
     
